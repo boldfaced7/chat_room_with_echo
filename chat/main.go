@@ -1,9 +1,11 @@
 package main
 
 import (
+	"flag"
 	"github.com/labstack/echo"
 	"html/template"
 	"io"
+	"log"
 	"net/http"
 )
 
@@ -12,17 +14,24 @@ type Template struct {
 }
 
 func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+	t.templates = template.Must(template.ParseGlob("./chat/templates/*.html"))
 	return t.templates.ExecuteTemplate(w, name, data)
 }
 
 func main() {
-	t := &Template{
-		templates: template.Must(template.ParseGlob("./chat/templates/*.html")),
-	}
+	var addr = flag.String("addr", ":8080", "The addr of the application.")
+	flag.Parse()
+
+	r := newRoom()
 	e := echo.New()
-	e.Renderer = t
+	e.Renderer = &Template{}
+
 	e.GET("/", func(c echo.Context) error {
 		return c.Render(http.StatusOK, "chat.html", "")
 	})
-	e.Logger.Fatal(e.Start(":8080"))
+	e.GET("/room", r.CreateRoom)
+	go r.run()
+
+	log.Println("Starting web server on", *addr)
+	e.Logger.Fatal(e.Start(*addr))
 }

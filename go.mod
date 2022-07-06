@@ -3,6 +3,7 @@ module chat_room_with_echo
 go 1.18
 
 require (
+	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/labstack/echo v3.3.10+incompatible // indirect
 	github.com/labstack/gommon v0.3.1 // indirect
 	github.com/mattn/go-colorable v0.1.11 // indirect
@@ -14,3 +15,5 @@ require (
 	golang.org/x/sys v0.0.0-20211103235746-7861aae1554b // indirect
 	golang.org/x/text v0.3.6 // indirect
 )
+
+replace chat_room_with_echo => ./
