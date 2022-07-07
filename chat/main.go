@@ -1,12 +1,14 @@
 package main
 
 import (
+	"chat_room_with_echo/trace"
 	"flag"
 	"github.com/labstack/echo"
 	"html/template"
 	"io"
 	"log"
 	"net/http"
+	"os"
 )
 
 type Template struct {
@@ -23,6 +25,7 @@ func main() {
 	flag.Parse()
 
 	r := newRoom()
+	r.tracer = trace.New(os.Stdout)
 	e := echo.New()
 	e.Renderer = &Template{}
 
